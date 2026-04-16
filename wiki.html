@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <title>데카위키</title>
+        <style>
+            :root {
+                --wiki-main-color: #00bfa5; 
+                --wiki-text-color: #ffffff;
+                --wiki-link-color: #0275d8;
+                --wiki-border-color: #ddd;
+                --wiki-bg-gray: #eee;
+                --wiki-max-width: 700px;
+                --wiki-font-size: 15px;
+                --wiki-line-height: 1.5;
+            }
+
+            #wikiwrap {
+                --wiki-main-color: #00bfa5; 
+            }
+
+            .wiki-container {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .wiki-main-table {
+                order: 1;
+            }
+
+            .wiki-index {
+                order: 2;
+            }
+
+            @media (min-width: 768px) {
+                .wiki-container {
+                    flex-direction: row;
+                    align-items: flex-start;
+                }
+
+                .wiki-index {
+                    order: 1;
+                    flex: 0 0 250px;
+                    top: 20px;
+                }
+
+                .wiki-main-table {
+                    order: 2;
+                    flex: 1;
+                    min-width: 0;
+                }
+            }
+
+            #wikiwrap {
+                font-family: "Pretendard JP Variable", "Pretendard JP", "Pretendard", Pretendard, 
+                             -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", 
+                             "Segoe UI", "Hiragino Sans", "Apple SD Gothic Neo", Meiryo, 
+                             "Noto Sans JP", "Noto Sans KR", "Malgun Gothic", Osaka, 
+                             "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+                box-sizing: border-box;
+                font-size: var(--wiki-font-size);
+                line-height: var(--wiki-line-height);
+                max-width: var(--wiki-max-width);
+                margin: 0 auto;
+            }
+
+            #wikiwrap a,
+            .text1 a,
+            .wiki-category a,
+            .wiki-index a {
+                color: var(--wiki-link-color) !important;
+                text-decoration: none;
+            }
+
+            #wikiwrap a::before,
+            #wikiwrap a::after,
+            .text1 a::before,
+            .wiki-category a::before,
+            .wiki-index a::before {
+                content: none !important;
+            }
+
+            .wiki-main-table {
+                border-collapse: collapse;
+                width: 100%;
+                border: 2px solid var(--wiki-main-color);
+                font-size: 0.96em;
+                line-height: var(--wiki-line-height);
+                margin: 20px 0 16px;
+            }
+
+            .wt-name {
+                padding: 5px 10px;
+                border: 2px solid var(--wiki-main-color);
+                text-align: center;
+                background-color: var(--wiki-main-color);
+                color: var(--wiki-text-color);
+            }
+
+            .wt-copyright {
+                padding: 5px 10px;
+                border: 1px solid var(--wiki-border-color);
+                text-align: center;
+                color: #000;
+            }
+
+            .wt-color {
+                width: 30%;
+                padding: 5px 10px;
+                border: 1px solid var(--wiki-border-color);
+                border-right: 1px solid var(--wiki-border-color);
+                border-bottom: 1px solid var(--wiki-border-color);
+                text-align: center;
+                background-color: var(--wiki-main-color);
+                color: var(--wiki-text-color);
+            }
+
+            .wt-detail {
+                padding: 5px 10px;
+                border: 1px solid var(--wiki-border-color);
+                border-bottom: 1px solid var(--wiki-border-color);
+                text-align: left;
+                color: #000;
+            }
+
+            .wiki-main-table tr:last-child > td {
+                border-bottom: none;
+            }
+
+            summary {
+                list-style-type: none;
+                opacity: 0.5;
+                cursor: pointer;
+                align-items: center;
+                justify-content: center;
+            }
+
+            summary::-webkit-details-marker {
+                display: none;
+            }
+
+            details[open] summary {
+                opacity: 1;
+            }
+
+            .wiki-h1-icon ion-icon,
+            .wiki-h2-icon ion-icon,
+            .wiki-h3-icon ion-icon {
+                transition: transform 0.3s ease;
+                transform: rotate(-90deg);
+            }
+
+            details[open] .wiki-h1-icon ion-icon,
+            details[open] .wiki-h2-icon ion-icon,
+            details[open] .wiki-h3-icon ion-icon {
+                transform: rotate(0deg);
+            }
+
+            .text1 {
+                font-size: var(--wiki-font-size);
+                line-height: var(--wiki-line-height);
+            }
+
+            .wiki-category {
+                width: 100%;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 0.9rem;
+                font-weight: normal;
+                line-height: var(--wiki-line-height);
+                margin: 0 0 1em;
+                padding: 0.2rem 0.5rem;
+            }
+
+            .wiki-h1 {
+                font-size: 1.8em;
+                border-bottom: 1px solid #ccc;
+                margin: 1.2em 0 0.7em;
+                padding-bottom: 5px;
+                font-weight: bold;
+            }
+
+            .wiki-h2 {
+                font-size: 1.6em;
+                border-bottom: 1px solid #ccc;
+                margin: 1.2em 0 0.7em;
+                padding-bottom: 5px;
+                font-weight: bold;
+            }
+
+            .wiki-h3 {
+                font-size: 1.4em;
+                border-bottom: 1px solid #ccc;
+                margin: 1.2em 0 0.7em;
+                padding-bottom: 5px;
+                font-weight: bold;
+            }
+
+            .wiki-h1-icon,
+            .wiki-h2-icon,
+            .wiki-h3-icon {
+                color: #666;
+                float: left;
+                font-weight: 400;
+                line-height: 1em;
+                text-align: center;
+                width: 0.9em;
+                margin-right: 0.4em;
+                margin-top: 0.2em;
+            }
+
+            .wiki-index {
+                border-collapse: collapse;
+                width: auto;
+                max-width: 250px;
+                border: 1px solid #ccc;
+                margin: 0 0 20px 5px;
+                line-height: 1.8;
+            }
+
+            .wiki-quote {
+                border-collapse: collapse;
+                width: auto;
+                height: auto;
+                margin: 1em 0;
+            }
+
+            .wiki-quote td {
+                width: 100%;
+                border: 2px dashed #ccc;
+                border-left: 5px solid var(--wiki-main-color);
+                background: var(--wiki-bg-gray);
+                padding: 1em;
+                line-height: 1.6;
+            }
+
+            .wiki-quote hr {
+                border: 0;
+                border-top: 1px solid #ccc;
+                margin: 0.5em 0;
+            }
+
+            .wiki-footnote {
+                border-top: 1px solid #777;
+                margin: 1.5em 0;
+                padding: 0.5em 0;
+                font-size: 0.9em;
+            }
+            .wiki-footnote p {
+                margin: 5px 0;
+            }
+
+            .wikigreenicon {
+                background: green;
+                color: white;
+                padding: 0 0.08em;
+                font-size: var(--wiki-font-size);
+                vertical-align: middle;
+            }
+
+            .wikigreentext {
+                color: green;
+                vertical-align: middle;
+                font-size: var(--wiki-font-size);
+                line-height: var(--wiki-line-height);
+            }
+
+            .wikigreen:hover {
+                text-decoration: underline;
+                text-decoration-color: green;
+            }
+
+            .wiki-img-sing {
+                width: 100%;
+                margin: 1em 0;
+                border-collapse: collapse;
+                line-height: 0;
+            }
+
+            .wiki-img-sing td {
+                padding: 0;
+                border: 2px solid var(--wiki-main-color);
+            }
+
+            .wiki-img-sing img {
+                display: block;
+                width: 100%;
+                height: auto;
+            }
+
+            .wiki-img-sing iframe {
+                display: block;
+                width: 100%;
+                height: auto;
+                aspect-ratio: 16 / 9;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            .wiki-img-sing iframe[src*="youtube.com"] {
+                border-radius: 0 !important;
+            }
+            .wiki-fn-link {
+                position: relative;
+                display: inline-block;
+                cursor: pointer;
+                text-decoration: none !important;
+            }
+            .wiki-fn-tooltip {
+                display: none;
+                position: absolute;
+                bottom: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #ffffff;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                padding: 8px 12px;
+                width: max-content;
+                max-width: 250px;
+                z-index: 100;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                text-align: left;
+                white-space: normal;
+                margin-bottom: 8px; 
+                
+                font-size: calc(var(--wiki-font-size) * 0.9);
+                line-height: var(--wiki-line-height);
+                font-weight: normal !important;
+            }
+
+            .wiki-fn-tooltip::after {
+                content: '';
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+                border-width: 6px;
+                border-style: solid;
+                border-color: #ccc transparent transparent transparent; 
+            }
+
+            @media (min-width: 768px) {
+                .wiki-fn-link:hover .wiki-fn-tooltip {
+                    display: block;
+                }
+            }
+
+            .wiki-modal-overlay {
+                display: none;
+                position: fixed;
+                top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.3);
+                z-index: 99998;
+            }
+            .wiki-modal-overlay.active {
+                display: block;
+            }
+            .wiki-modal-box {
+                position: fixed;
+                top: 50%; left: 50%;
+                transform: translate(-50%, -50%);
+                background: #ffffff;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                padding: 15px;
+                width: 80%;
+                max-width: 300px;
+                z-index: 99999;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                
+                font-size: calc(var(--wiki-font-size) * 0.9);
+                line-height: var(--wiki-line-height);
+                font-weight: normal !important;
+            }
+        </style>
+        <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    </head>
+    <body>
+        <div id="wikiwrap">
+            <p class="wiki-category">분류: <span style="color: #0275d8">신의 눈/바람 | 원신/등장인물/몬드 | 원신/플레이어블 캐릭터/법구</span></p>
+            
+            <div class="wiki-container">
+                <table class="wiki-main-table">
+                    <tbody>
+                        <tr>
+                            <td class="wt-name" colspan="2">
+                                <b><span style="font-size: 20px;">잉크로 번진 생애</span></b><br />
+                                <b><span style="font-size: 13px; line-height: 180%;"><ruby>deca:<rt></rt></ruby>　<ruby>life smudged with ink<rt></rt></ruby></span></b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="padding: 0; border: 2px solid var(--wiki-main-color); border-bottom: var(--wiki-border-color);">
+                                <div style="text-align: center;">
+                                    <img src="https://www.image2url.com/r2/default/images/1776326566458-ee1230c4-cc35-43f5-98ec-f105921ff91f.png" width="100%" style="display:block;" />
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <tr><td class="wt-color">본명</td><td class="wt-detail">데카</td></tr>
+                        <tr><td class="wt-color">성별</td><td class="wt-detail">남성</td></tr>
+                        <tr><td class="wt-color">생일</td><td class="wt-detail">11월 7일</td></tr>
+                        <tr><td class="wt-color">소속</td><td class="wt-detail">몬드성</td></tr>
+                        <tr><td class="wt-color">신의 눈</td><td class="wt-detail">바람</td></tr>
+                        <tr><td class="wt-color">무기</td><td class="wt-detail">법구</td></tr>
+                        <tr><td class="wt-color">운명의 자리</td><td class="wt-detail">깃펜자리</td></tr>
+                        <tr><td class="wt-color">출시 일자</td><td class="wt-detail">2026/04/09</td></tr>
+                        <tr><td class="wt-color">비고</td><td class="wt-detail">마침표를 향해 흐르는 이야기</td></tr>
+                        <tr><td class="wt-color">언어별 표기</td><td class="wt-detail">EN | Deca CN |  黛카 JP | デ카</td></tr>
+                    </tbody>
+                </table>
+                
+                <table class="wiki-index">
+                    <tbody>
+                        <tr style="padding: 0 20px;">
+                            <td style="width: 100%; margin-left: 5px; padding: 12px 20px 18px 20px; font-size: .95rem; line-height: 1.5;">
+                                <a name="목차"></a><span style="font-size: 1.25em; margin-left: -5px;">목차</span><br />
+                                <a style="padding-left: 0px;" href="#목차1-">1.</a> 개요<br />
+                                <a style="padding-left: 0px;" href="#목차2-">2.</a> 설정<br />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <details open>
+                <summary class="text1">
+                    <h2 class="wiki-h1">
+                        <span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> 
+                        <a name="목차1-"></a><a href="#목차">1.</a> 개요
+                    </h2>
+                </summary>
+                <table class="wiki-quote">
+                    <tbody>
+                        <tr>
+                            <td class="text1" style="border-left: 5px solid #00bfa5;">
+                                「이야기의 결말을 아는 사람은<div>독자도 작가도 아닌 주인공이야.」</div>
+                                <hr />
+                                《원신》을 기반으로 제작된 OC 캐릭터 대사
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="text1"><span style="font-size: 16px;">《원신》을 기반으로 제작된 OC인 바람 원소의 법구 캐릭터.</span></p>
+            </details>
+
+            <details open>
+                <summary class="text1">
+                    <h2 class="wiki-h1">
+                        <span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> 
+                        <a name="목차2-"></a><a href="#목차">2.</a> 설정
+                    </h2>
+                </summary>
+                </details>
+        </div>
+    </body>
+</html>
