@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <title>위키</title>
+       <style>
+:root {
+    --wiki-main-color: #00bfa5; 
+    --wiki-text-color: #ffffff;
+    --wiki-link-color: #0275d8;
+    --wiki-border-color: #ddd;
+    --wiki-bg-gray: #eee;
+    --wiki-max-width: 700px;
+    --wiki-font-size: 15px;
+    --wiki-line-height: 1.5;
+}
+
+#wikiwrap {
+    --wiki-main-color: #00bfa5; 
+}
+
+.wiki-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.wiki-main-table {
+    order: 1;
+}
+
+.wiki-index {
+    order: 2;
+}
+
+@media (min-width: 768px) {
+    .wiki-container {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .wiki-index {
+        order: 1;
+        flex: 0 0 250px;
+        top: 20px;
+    }
+
+    .wiki-main-table {
+        order: 2;
+        flex: 1;
+        min-width: 0;
+    }
+}
+
+#wikiwrap {
+    font-family: "Pretendard JP Variable", "Pretendard JP", "Pretendard", Pretendard, 
+                 -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", 
+                 "Segoe UI", "Hiragino Sans", "Apple SD Gothic Neo", Meiryo, 
+                 "Noto Sans JP", "Noto Sans KR", "Malgun Gothic", Osaka, 
+                 "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+    box-sizing: border-box;
+    font-size: var(--wiki-font-size);
+    line-height: var(--wiki-line-height);
+    max-width: var(--wiki-max-width);
+    margin: 0 auto;
+}
+
+#wikiwrap a,
+.text1 a,
+.wiki-category a,
+.wiki-index a {
+    color: var(--wiki-link-color) !important;
+    text-decoration: none;
+}
+
+#wikiwrap a::before,
+#wikiwrap a::after,
+.text1 a::before,
+.wiki-category a::before,
+.wiki-index a::before {
+    content: none !important;
+}
+
+.wiki-main-table {
+    border-collapse: collapse;
+    width: 100%;
+    border: 2px solid var(--wiki-main-color);
+    font-size: 0.96em;
+    line-height: var(--wiki-line-height);
+    margin: 20px 0 16px;
+}
+
+.wt-name {
+    padding: 5px 10px;
+    border: 2px solid var(--wiki-main-color);
+    text-align: center;
+    background-color: var(--wiki-main-color);
+    color: var(--wiki-text-color);
+}
+
+.wt-copyright {
+    padding: 5px 10px;
+    border: 1px solid var(--wiki-border-color);
+    text-align: center;
+    color: #000;
+}
+
+.wt-color {
+    width: 30%;
+    padding: 5px 10px;
+    border: 1px solid var(--wiki-border-color);
+    border-right: 1px solid var(--wiki-border-color);
+    border-bottom: 1px solid var(--wiki-border-color);
+    text-align: center;
+    background-color: var(--wiki-main-color);
+    color: var(--wiki-text-color);
+}
+
+.wt-detail {
+    padding: 5px 10px;
+    border: 1px solid var(--wiki-border-color);
+    border-bottom: 1px solid var(--wiki-border-color);
+    text-align: left;
+    color: #000;
+}
+
+.wiki-main-table tr:last-child > td {
+    border-bottom: none;
+}
+
+summary {
+    list-style-type: none;
+    opacity: 0.5;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+}
+
+summary::-webkit-details-marker {
+    display: none;
+}
+
+details[open] summary {
+    opacity: 1;
+}
+
+.wiki-h1-icon ion-icon,
+.wiki-h2-icon ion-icon,
+.wiki-h3-icon ion-icon {
+    transition: transform 0.3s ease;
+    transform: rotate(-90deg);
+}
+
+details[open] .wiki-h1-icon ion-icon,
+details[open] .wiki-h2-icon ion-icon,
+details[open] .wiki-h3-icon ion-icon {
+    transform: rotate(0deg);
+}
+
+.text1 {
+    font-size: var(--wiki-font-size);
+    line-height: var(--wiki-line-height);
+}
+
+.wiki-category {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: normal;
+    line-height: var(--wiki-line-height);
+    margin: 0 0 1em;
+    padding: 0.2rem 0.5rem;
+}
+
+.wiki-h1 {
+    font-size: 1.8em;
+    border-bottom: 1px solid #ccc;
+    margin: 1.2em 0 0.7em;
+    padding-bottom: 5px;
+    font-weight: bold;
+}
+
+.wiki-h2 {
+    font-size: 1.6em;
+    border-bottom: 1px solid #ccc;
+    margin: 1.2em 0 0.7em;
+    padding-bottom: 5px;
+    font-weight: bold;
+}
+
+.wiki-h3 {
+    font-size: 1.4em;
+    border-bottom: 1px solid #ccc;
+    margin: 1.2em 0 0.7em;
+    padding-bottom: 5px;
+    font-weight: bold;
+}
+
+.wiki-h1-icon,
+.wiki-h2-icon,
+.wiki-h3-icon {
+    color: #666;
+    float: left;
+    font-weight: 400;
+    line-height: 1em;
+    text-align: center;
+    width: 0.9em;
+    margin-right: 0.4em;
+    margin-top: 0.2em;
+}
+
+.wiki-index {
+    border-collapse: collapse;
+    width: auto;
+    max-width: 250px;
+    border: 1px solid #ccc;
+    margin: 0 0 20px 5px;
+    line-height: 1.8;
+}
+
+.wiki-quote {
+    border-collapse: collapse;
+    width: auto;
+    height: auto;
+    margin: 1em 0;
+}
+
+.wiki-quote td {
+    width: 100%;
+    border: 2px dashed #ccc;
+    border-left: 5px solid var(--wiki-main-color);
+    background: var(--wiki-bg-gray);
+    padding: 1em;
+    line-height: 1.6;
+}
+
+.wiki-quote hr {
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 0.5em 0;
+}
+
+.wiki-footnote {
+    border-top: 1px solid #777;
+    margin: 1.5em 0;
+    padding: 0.5em 0;
+    font-size: 0.9em;
+}
+.wiki-footnote p {
+    margin: 5px 0;
+}
+
+.wikigreenicon {
+    background: green;
+    color: white;
+    padding: 0 0.08em;
+    font-size: var(--wiki-font-size);
+    vertical-align: middle;
+}
+
+.wikigreentext {
+    color: green;
+    vertical-align: middle;
+    font-size: var(--wiki-font-size);
+    line-height: var(--wiki-line-height);
+}
+
+.wikigreen:hover {
+    text-decoration: underline;
+    text-decoration-color: green;
+}
+
+.wiki-img-sing {
+    width: 100%;
+    margin: 1em 0;
+    border-collapse: collapse;
+    line-height: 0;
+}
+
+.wiki-img-sing td {
+    padding: 0;
+    border: 2px solid var(--wiki-main-color);
+}
+
+.wiki-img-sing img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.wiki-img-sing iframe {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border-radius: 0;
+    box-shadow: none;
+}
+.wiki-img-sing iframe[src*="youtube.com"] {
+    border-radius: 0 !important;
+}
+.wiki-fn-link {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    text-decoration: none !important;
+}
+.wiki-fn-tooltip {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px 12px;
+    width: max-content;
+    max-width: 250px;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-align: left;
+    white-space: normal;
+    margin-bottom: 8px; 
+    
+    font-size: calc(var(--wiki-font-size) * 0.9);
+    line-height: var(--wiki-line-height);
+    font-weight: normal !important;
+}
+
+.wiki-fn-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: #ccc transparent transparent transparent; 
+}
+
+@media (min-width: 768px) {
+    .wiki-fn-link:hover .wiki-fn-tooltip {
+        display: block;
+    }
+}
+
+.wiki-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.3);
+    z-index: 99998;
+}
+.wiki-modal-overlay.active {
+    display: block;
+}
+.wiki-modal-box {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+    width: 80%;
+    max-width: 300px;
+    z-index: 99999;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    
+    font-size: calc(var(--wiki-font-size) * 0.9);
+    line-height: var(--wiki-line-height);
+    font-weight: normal !important;
+}
+</style>
+
+<!-- 나무위키 형식 -->
+
+<div id="wikiwrap">
+  <p class="wiki-category">분류: <span style="color: #0275d8">신의 눈/바람 | 원신/등장인물/몬드 | 원신/플레이어블 캐릭터/법구</span></p>
+  
+  <div class="wiki-container">
+    <table class="wiki-main-table">
+      <tbody>
+        <tr>
+          <td class="wt-name" colspan="2">
+            <b><span style="font-size: 20px;">잉크로 번진 생애</span></b><br />
+            <span style="font-size: 13px; line-height: 180%;"><ruby>deca:<rt></rt></ruby>　<ruby>life smudged with ink<rt></rt></ruby></span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="padding: 0; border: 2px solid var(--wiki-main-color); border-bottom: var(--wiki-border-color);">
+            <div style="text-align: center;">
+              <img src="https://www.image2url.com/r2/default/images/1776326566458-ee1230c4-cc35-43f5-98ec-f105921ff91f.png" width="100%" style="display:block;" />
+            </div>
+          </td>
+        </tr>
+        
+        <tr><td class="wt-color"><b>본명</b></td><td class="wt-detail">데카</td></tr>
+<tr><td class="wt-color"><b>성별</b></td><td class="wt-detail">남성</td></tr>
+<tr><td class="wt-color"><b>생일</b></td><td class="wt-detail">11월 7일</td></tr>
+<tr><td class="wt-color"><b>소속</b></td><td class="wt-detail">몬드성</td></tr>
+<tr><td class="wt-color"><b>신의 눈</b></td><td class="wt-detail">바람</td></tr>
+<tr><td class="wt-color"><b>무기</b></td><td class="wt-detail">법구</td></tr>
+<tr><td class="wt-color"><b>운명의 자리</b></td><td class="wt-detail">깃펜자리</td></tr>
+<tr><td class="wt-color"><b>출시 일자</b></td><td class="wt-detail">2026/04/09</td></tr>
+<tr><td class="wt-color"><b>비고</b></td><td class="wt-detail">마침표를 향해 흐르는 이야기</td></tr>
+<tr>
+  <td class="wt-color"><b>언어별 표기</b></td>
+  <td class="wt-detail">
+    EN | Deca<br>
+    <ruby>CN | 黛卡<rt>Dai Ka</rt></ruby><br>
+    JP | デカ
+  </td>
+</tr>
+
+      </tbody>
+    </table>
+    
+    <!-- 목차 -->
+  <table class="wiki-index">
+        <tbody>
+        <tr style="padding: 0 20px;">
+        <td style="width: 100%; margin-left: 5px; padding: 12px 20px 18px 20px; font-size: .85rem; line-height: 1.5;">
+        <a name="목차"></a><span style="font-size: 1.5em; margin-left: -5px;">목차</span><br />
+        <a style="padding-left: 0px;" href="#목차1-">1.</a> 개요<br />
+<a style="padding-left: 0px;" href="#목차2-">2.</a> 설정<br />
+<a style="padding-left: 20px;" href="#목차2-1">2.1</a> 무드곡<br />
+<a style="padding-left: 0px;" href="#목차3-">3.</a> 속성<br />
+<a style="padding-left: 20px;" href="#목차3-1">3.1</a> 기초 속성<br />
+<a style="padding-left: 40px;" href="#목차3-1-1">3.1.1</a> 돌파 재료<br />
+<a style="padding-left: 20px;" href="#목차3-2">3.2</a> 특성<br />
+<a style="padding-left: 40px;" href="#목차3-2-1">3.2.1</a> 일반 공격 · 잔향의 획: 서두<br />
+<a style="padding-left: 40px;" href="#목차3-2-2">3.2.2</a> 흩어진 문장: 흐름<br />
+<a style="padding-left: 40px;" href="#목차3-2-3">3.2.3</a> 영겁의 서사: 귀결<br />
+<a style="padding-left: 40px;" href="#목차3-2-4">3.2.4</a> 종이 위의 미풍<br />
+<a style="padding-left: 40px;" href="#목차3-2-5">3.2.5</a> 선명한 연묵<br />
+<a style="padding-left: 40px;" href="#목차3-2-6">3.2.6</a> 창작의 여력<br />
+<a style="padding-left: 20px;" href="#목차3-3">3.3</a> 운명의 자리<br />
+<a style="padding-left: 20px;" href="#목차3-4">3.4</a> 특제 요리<br />
+<a style="padding-left: 0px;" href="#목차4-">4.</a> 운용<br />
+<a style="padding-left: 20px;" href="#목차4-1">4.1</a> 무기<br />
+<a style="padding-left: 20px;" href="#목차4-2">4.2</a> 성유물<br />
+<a style="padding-left: 20px;" href="#목차4-3">4.3</a> 추천 조합 캐릭터<br />
+<a style="padding-left: 20px;" href="#목차4-4">4.4</a> 멀티 플레이<br />
+<a style="padding-left: 0px;" href="#목차5-">5.</a> 평가<br />
+<a style="padding-left: 0px;" href="#목차6-">6.</a> 대사<br />
+<a style="padding-left: 20px;" href="#목차6-1">6.1</a> 음성<br />
+<a style="padding-left: 20px;" href="#목차6-2">6.2</a> 선물 세트 대사<br />
+<a style="padding-left: 0px;" href="#목차7-">7.</a> 스토리<br />
+<a style="padding-left: 0px;" href="#목차8-">8.</a> 생일 편지<br />
+<a style="padding-left: 20px;" href="#목차8-1">8.1</a> 2026<br />
+<a style="padding-left: 0px;" href="#목차9-">9.</a> 캐릭터 일러스트<br />
+<a style="padding-left: 0px;" href="#목차10-">10.</a> 작중 행적<br />
+<a style="padding-left: 0px;" href="#목차11-">11.</a> 캐릭터 코스튬<br />
+<a style="padding-left: 20px;" href="#목차11-1">11.1</a> 흐르는 종막의 서사시<br />
+<a style="padding-left: 0px;" href="#목차12-">12.</a> 명함<br />
+<a style="padding-left: 0px;" href="#목차13-">13.</a> 인간관계<br />
+<a style="padding-left: 20px;" href="#목차13-1">13.1</a> <a href="https://namu.wiki/w/%EC%97%AC%ED%96%89%EC%9E%90(%EC%9B%90%EC%8B%A0)" target="_blank">여행자</a><br />
+<a style="padding-left: 20px;" href="#목차13-2">13.2</a> <a href="https://namu.wiki/w/%EB%B0%A9%EB%9E%91%EC%9E%90(%EC%9B%90%EC%8B%A0)" target="_blank">방랑자</a><br />
+<a style="padding-left: 20px;" href="#목차13-3">13.3</a> <a href="https://namu.wiki/w/%EB%A6%AC%EC%82%AC(%EC%9B%90%EC%8B%A0)" target="_blank">리사</a><br />
+<a style="padding-left: 20px;" href="#목차13-4">13.4</a> <a href="https://namu.wiki/w/%EC%BC%80%EC%9D%B4%EC%95%84" target="_blank">케이아</a><br />
+<a style="padding-left: 20px;" href="#목차13-5">13.5</a> <a href="https://namu.wiki/w/%EB%B2%A4%ED%8B%B0(%EC%9B%90%EC%8B%A0)" target="_blank">벤티</a><br />
+<a style="padding-left: 20px;" href="#목차13-6">13.6</a> <a href="https://namu.wiki/w/%EB%8B%A4%EC%9D%B4%EB%A3%A8%ED%81%AC" target="_blank">다이루크</a><br />
+<a style="padding-left: 0px;" href="#목차14-">14.</a> 언어별 표기<br />
+<a style="padding-left: 0px;" href="#목차15-">15.</a> 여담<br />
+<a style="padding-left: 0px;" href="#목차16-">16.</a> 관련 문서<br />
+<a style="padding-left: 0px;" href="#목차17-">17.</a> 둘러보기<br />
+</td></tr></tbody></table></div>
+
+<!-- 개요 -->
+<details open><summary class="text1"><h2 class="wiki-h1"><span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차1-"></a><a href="#목차">1.</a> 개요</h2></summary>
+<table class="wiki-quote"><tbody><tr><td class="text1" style="border-left: 5px solid #00bfa5;">「이야기의 결말을 아는 사람은<div>독자도 작가도 아닌 주인공이에요.」</div><hr />《<a href="https://namu.wiki/w/%EC%97%AC%ED%96%89%EC%9E%90(%EC%9B%90%EC%8B%A0)" target="_blank">원신</a>》을 기반으로 제작된 OC 캐릭터 대사</td></tr></tbody></table>
+<p class="text1"><span style="font-size: 16px;"> 《<a href="https://namu.wiki/w/%EC%97%AC%ED%96%89%EC%9E%90(%EC%9B%90%EC%8B%A0)" target="_blank">원신</a>》을 기반으로 제작된 OC인 바람 원소의 법구 캐릭터.</span></p>
+</details>
+
+<!-- 설정 -->
+<details open><summary class="text1"><h2 class="wiki-h1"><span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차2-"></a><a href="#목차">2.</a> 설정</h2></summary>
+<table class="wiki-quote"><tbody><tr><td class="text1" style="border-left: 5px solid #00bfa5;"><b>캐릭터 소개</b><div>늘 이야기의 문장의 색이 흐릿했던 그는 어느 날 깨달았다.</div><div>작가가 이야기를 쓸 때 가장 진한 색의 잉크를 얻기 위해선 의지가 필요하다는 사실을 말이다.</div><hr /><b>캐릭터 정보</b><div>즐거움과 끈기라는 것을 제대로 가져본 적이 없었다.</div><div>가져야 할 이유도 찾지 못한 채 그저 그런 삶을 살아왔다.</div><div>그러던 그는 어느 날, 즐거움이라는 것을 느끼게 되었다.</div><div>그 즐거움이라는 것을 놓치게 되자, 그걸 되찾고자 하는 끈기를 얻게 됐다.</div><div>이를 통해 옅은 색의 잉크만을 써오던 그는 새로운 이야기를 지필해낼 수 있는 의지라는 이름을 가진 잉크를 쓰게 되었다.</div></td></tr></tbody></table>
+</details>
+
+<!-- 무드곡 -->
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차2-1"></a><a href="#목차">2.1</a> 무드곡</h2></summary>
+<table class="wiki-img-sing"><tbody><tr><td style="border-color: #00bfa5;"><iframe src="https://www.youtube.com/embed/QnyMpf_7S_U" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" frameborder="0" allowfullscreen="true"></iframe></td></tr><tr><td style="background-color: #00bfa5; color: #ffffff; border-color: #00bfa5; padding: 5px 10px; text-align: center; word-wrap: break-word; white-space: normal; vertical-align: top; line-height: 1.5;">日常 - Nichijou</td></tr></tbody></table>
+<table class="wiki-img-sing"><tbody><tr><td style="border-color: #00bfa5;"><iframe src="https://www.youtube.com/embed/9mVXPLlnSu4" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" frameborder="0" allowfullscreen="true"></iframe></td></tr><tr><td style="background-color: #00bfa5; color: #ffffff; border-color: #00bfa5; padding: 5px 10px; text-align: center; word-wrap: break-word; white-space: normal; vertical-align: top; line-height: 1.5;">Em Beihold - Numb Little Bug</td></tr></tbody></table>
+</details>
+
+<!-- 속성 -->
+<details open><summary class="text1"><h2 class="wiki-h1"><span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차3-"></a><a href="#목차">3.</a> 속성</h2></summary>
+</details>
+
+<!-- 기초 속성 -->
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차3-1"></a><a href="#목차">3.1</a> 기초 속성</h2></summary>
+<table class="wiki-img-sing"><tbody>
+<table style="width:100%; 
+  background:#3c4150; 
+  color:#ece6cc; 
+  border-collapse:collapse; 
+  text-align:center;
+  font-size:0.8rem;
+  border:1px solid #ffffff;">
+
+  <thead>
+    <tr style="background:#28283a; color:#d2be91;">
+      <td style="border:1px solid #ffffff;">돌파 단계</td>
+      <td style="border:1px solid #ffffff;">레벨</td>
+      <td style="border:1px solid #ffffff;">기초 HP</td>
+      <td style="border:1px solid #ffffff;">기초 공격력</td>
+      <td style="border:1px solid #ffffff;">기초 방어력</td>
+      <td style="border:1px solid #ffffff;">치명타 확률</td>
+      <td style="border:1px solid #ffffff;">특성 해금</td>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td rowspan="2" style="border:1px solid #ffffff;">0</td>
+      <td style="border:1px solid #ffffff;">1</td>
+      <td style="border:1px solid #ffffff;">745</td>
+      <td style="border:1px solid #ffffff;">23</td>
+      <td style="border:1px solid #ffffff;">48</td>
+      <td rowspan="4" style="border:1px solid #ffffff;">5%</td>
+      <td rowspan="2" style="border:1px solid #ffffff;">-</td>
+    </tr>
+    <tr>
+      <td rowspan="2" style="border:1px solid #ffffff;">20</td>
+      <td style="border:1px solid #ffffff;">2012</td>
+      <td style="border:1px solid #ffffff;">60</td>
+      <td style="border:1px solid #ffffff;">123</td>
+    </tr>
+
+    <tr>
+      <td rowspan="2" style="border:1px solid #ffffff;">1</td>
+     
+      <td style="border:1px solid #ffffff;">2693</td>
+      <td style="border:1px solid #ffffff;">84</td>
+      <td style="border:1px solid #ffffff;">165</td>
+      <td rowspan="2" style="border:1px solid #ffffff;">종이 위의 미풍</td>
+    </tr>
+    <tr>
+      <td rowspan="2" style="border:1px solid #ffffff;">40</td>
+      <td style="border:1px solid #ffffff;">4061</td>
+      <td style="border:1px solid #ffffff;">120</td>
+      <td style="border:1px solid #ffffff;">247</td>
+    </tr>
+
+    <tr>
+      <td rowspan="2" style="border:1px solid #ffffff;">2</td>
+
+      <td style="border:1px solid #ffffff;">4524</td>
+      <td style="border:1px solid #ffffff;">134</td>
+      <td style="border:1px solid #ffffff;">276</td>
+      <td rowspan="2" style="border:1px solid #ffffff;">6%</td>
+      <td rowspan="2" style="border:1px solid #ffffff;">-</td>
+    </tr>
+    <tr>
+      <td rowspan="2" style="border:1px solid #ffffff;">50</td>
+      <td style="border:1px solid #ffffff;">5196</td>
+      <td style="border:1px solid #ffffff;">155</td>
+      <td style="border:1px solid #ffffff;">318</td>
+    </tr>
+
+    <tr>
+      <td rowspan="2" style="border:1px solid #ffffff;">3</td>
+      
+      <td style="border:1px solid #ffffff;">5789</td>
+      <td style="border:1px solid #ffffff;">174</td>
+      <td style="border:1px solid #ffffff;">375</td>
+      <td rowspan="4" style="border:1px solid #ffffff;">5%</td>
+      <td rowspan="2" style="border:1px solid #ffffff;">-</td>
+    </tr>
+    <tr>
+      <td rowspan="2" style="border:1px solid #ffffff;">60</td>
+      <td style="border:1px solid #ffffff;">6530</td>
+      <td style="border:1px solid #ffffff;">194</td>
+      <td style="border:1px solid #ffffff;">399</td>
+    </tr>
+
+    <tr>
+      <td rowspan="2" style="border:1px solid #ffffff;">4</td>
+      
+      <td style="border:1px solid #ffffff;">7012</td>
+      <td style="border:1px solid #ffffff;">208</td>
+      <td style="border:1px solid #ffffff;">428</td>
+      <td rowspan="2" style="border:1px solid #ffffff;">흐림 없는 서사</td>
+    </tr>
+    <tr>
+      <td rowspan="2" style="border:1px solid #ffffff;">70</td>
+      <td style="border:1px solid #ffffff;">7666</td>
+      <td style="border:1px solid #ffffff;">229</td>
+      <td style="border:1px solid #ffffff;">470</td>
+    </tr>
+
+    <tr>
+      <td rowspan="2" style="border:1px solid #ffffff;">5</td>
+      
+      <td style="border:1px solid #ffffff;">8134</td>
+      <td style="border:1px solid #ffffff;">243</td>
+      <td style="border:1px solid #ffffff;">500</td>
+      <td rowspan="2" style="border:1px solid #ffffff;">9.8%</td>
+      <td rowspan="2" style="border:1px solid #ffffff;">-</td>
+    </tr>
+    <tr>
+      <td rowspan="2" style="border:1px solid #ffffff;">80</td>
+      <td style="border:1px solid #ffffff;">8872</td>
+      <td style="border:1px solid #ffffff;">264</td>
+      <td style="border:1px solid #ffffff;">542</td>
+    </tr>
+
+    <tr>
+      <td rowspan="2" style="border:1px solid #ffffff;">6</td>
+      
+      <td style="border:1px solid #ffffff;">9345</td>
+      <td style="border:1px solid #ffffff;">278</td>
+      <td style="border:1px solid #ffffff;">572</td>
+      <td rowspan="4" style="border:1px solid #ffffff;">24%</td>
+      <td rowspan="2" style="border:1px solid #ffffff;">-</td>
+    </tr>
+    <tr>
+      <td style="border:1px solid #ffffff;">90</td>
+      <td style="border:1px solid #ffffff;">10067</td>
+      <td style="border:1px solid #ffffff;">299</td>
+      <td style="border:1px solid #ffffff;">615</td>
+    </tr>
+
+  <tr>
+  <td rowspan="2" style="border:1px solid #ffffff;">상한 돌파</td>
+  <td style="border:1px solid #ffffff;">95</td>
+  <td style="border:1px solid #ffffff;">10425</td>
+  <td style="border:1px solid #ffffff;">333</td>
+  <td style="border:1px solid #ffffff;">637</td>
+  <td rowspan="2" style="border:1px solid #ffffff;">-</td>
+</tr>
+
+<tr>
+  <td style="border:1px solid #ffffff;">100</td>
+  <td style="border:1px solid #ffffff;">10763</td>
+  <td style="border:1px solid #ffffff;">366</td>
+  <td style="border:1px solid #ffffff;">659</td>
+</tr>
+
+  </tbody>
+</table>
+</details>
+
+<!-- 돌파 재료 -->
+<details open><summary class="text1"><h2 class="wiki-h3"><span class="wiki-h3-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차3-1-1"></a><a href="#목차">3.1.1</a> 돌파 재료</h2></summary>
+<p class="text1">이미지<div>자유로운 터키석 | 바람버섯 | 구라구라 꽃꿀 | 폭풍의 씨앗</div></p>
+</details>
+
+<!-- 특성 -->
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차3-2"></a><a href="#목차">3.2</a> 특성</h2></summary>
+<p class="text1">이미지<div>시문의 가르침 | 구라구라 꽃꿀 | 미정</div></p>
+</details>
+
+<!-- 일반 공격 -->
+<details open><summary class="text1"><h2 class="wiki-h3"><span class="wiki-h3-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차3-2-1"></a><a href="#목차">3.2.1</a> 일반 공격 · 잔향의 획: 서두</h2></summary>
+<p class="text1">일반 공격 설명</p>
+</details>
+
+<!-- 원소 전투 -->
+<details open><summary class="text1"><h2 class="wiki-h3"><span class="wiki-h3-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차3-2-2"></a><a href="#목차">3.2.2</a> 흩어진 문장: 흐름</h2></summary>
+<table class="wiki-quote"><tbody><tr><td class="text1" style="border-left: 5px solid #71bc6d;">대사 내용을 입력하세요.</td></tr></tbody></table>
+<table class="wiki-quote"><tbody><tr><td class="text1" style="border-left: 5px solid #70bb6c;">대사 내용을 입력하세요.</td></tr></tbody></table>
+<table class="wiki-quote"><tbody><tr><td class="text1" style="border-left: 5px solid #70ba6c;">대사 내용을 입력하세요.</td></tr></tbody></table>
+<p class="text1">원소 전투 스킬 설명</p>
+</details>
+
+<!-- 원소 폭발 -->
+<details open><summary class="text1"><h2 class="wiki-h3"><span class="wiki-h3-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차3-2-3"></a><a href="#목차">3.2.3</a> 영겁의 서사: 귀결</h2></summary>
+<table class="wiki-quote"><tbody><tr><td class="text1" style="border-left: 5px solid #70ba6c;">대사 내용을 입력하세요.</td></tr></tbody></table>
+<table class="wiki-quote"><tbody><tr><td class="text1" style="border-left: 5px solid #6fb96b;">대사 내용을 입력하세요.</td></tr></tbody></table>
+<table class="wiki-quote"><tbody><tr><td class="text1" style="border-left: 5px solid #70bb6c;">대사 내용을 입력하세요.</td></tr></tbody></table>
+<p class="text1">원소 폭발 스킬 설명</p>
+</details>
+
+<!-- 특성1 -->
+<details open><summary class="text1"><h2 class="wiki-h3"><span class="wiki-h3-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차3-2-4"></a><a href="#목차">3.2.4</a> 종이 위의 미풍</h2></summary>
+<p class="text1">설명</p>
+</details>
+
+<!-- 특성2 -->
+<details open><summary class="text1"><h2 class="wiki-h3"><span class="wiki-h3-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차3-2-5"></a><a href="#목차">3.2.5</a> 선명한 연묵</h2></summary>
+<p class="text1">설명</p>
+</details>
+
+<!-- 생활 특성 -->
+<details open><summary class="text1"><h2 class="wiki-h3"><span class="wiki-h3-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차3-2-6"></a><a href="#목차">3.2.6</a> 창작의 여력</h2></summary>
+<p class="text1"><span style="color: rgb(33, 37, 41); font-family: &quot;Pretendard JP&quot;, Pretendard, -apple-system, BlinkMacSystemFont, &quot;Apple SD Gothic Neo&quot;, &quot;Noto Sans KR&quot;, &quot;Noto Sans CJK KR&quot;, NanumBarunGothic, Roboto, &quot;Segoe UI&quot;, &quot;Malgun Gothic&quot;, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, sans-serif, emoji; font-size: 15px; background-color: rgb(255, 255, 255);">
+    케이아, 카에데하라 카즈하, 슈브르즈, 레이저와 동일한 특성.</span></p>
+</details>
+
+<!-- 운명의 자리 -->
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차3-3"></a><a href="#목차">3.3</a> 운명의 자리</h2></summary>
+<p class="text1">운명의 자리 설명</p>
+</details>
+
+<!-- 특제 요리 -->
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차3-4"></a><a href="#목차">3.4</a> 특제 요리</h2></summary>
+<p class="text1">특제 요리 설명</p>
+</details>
+
+<!-- 운용 -->
+<details open><summary class="text1"><h2 class="wiki-h1"><span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차4-"></a><a href="#목차">4.</a> 운용</h2></summary>
+<p class="text1">전투 운용</p>
+<p class="text1">필드 운용</p>
+</details>
+
+<!-- 무기 -->
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차4-1"></a><a href="#목차">4.1</a> 무기</h2></summary>
+<p class="text1">전무</p>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차4-2"></a><a href="#목차">4.2</a> 성유물</h2></summary>
+<p class="text1">설명</p>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차4-3"></a><a href="#목차">4.3</a> 추천 조합 캐릭터</h2></summary>
+<p class="text1">데카는 바람 원소 온필드 캐릭터이며 원소 폭발형으로 강화된 강공격을 사용한다. 우선 바람 원소 서포터인 6돌파 <a href="https://namu.wiki/w/%ED%8C%8C%EB%A3%A8%EC%9E%94" target="_blank">파루잔</a>을 고정으로 사용하고 나머지 두 캐릭터는 데카의 원소 에너지 충전과 딜링 증폭을 도울 캐릭터를 채용하게 된다.<div><b>&nbsp;· </b>파루잔 6돌파 파루잔은 바람 원소 내성 감소, 피해량, 치명타 피해를 제공하는 강력한 서포터이다. 특히 원소 충전이 필요한 데카에겐 바람 원소 배터리로 가치가 높아 거의 필수인 캐릭터이다.</div></p>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차4-4"></a><a href="#목차">4.4</a> 멀티 플레이</h2></summary>
+<p class="text1">데카는 원소 에너지와 방어막의 의존이 크기에 멀티 플레이에서는 자체 화력이 떨어지며 이를 원소 반응 등으로 극복하기에도 어려움이 있어 다른 유저들이 데카를 기준으로 캐릭터 조합을 맞춰야 어느 정도 딜량을 뽑아낼 수 있다. 그래도 아예 혼자 못 다니는 수준은 아니며 경직 저항력이 없는 데카에게 방어막을 제공해주는 캐릭터만 있다면 멀티 플레이 기준으로 충분한 화력을 보일 수 있다.</p>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h1"><span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차5-"></a><a href="#목차">5.</a> 평가</h2></summary>
+<p class="text1">원소 폭발 스킬인 영겁의 서사: 귀결을 사용한 뒤 강화된 일반 공격과 강공격을 수단으로 삼는 바람 원소 온필드 딜러.</p>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h1"><span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차6-"></a><a href="#목차">6.</a> 대사</h2></summary>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차6-1"></a><a href="#목차">6.1</a> 음성</h2></summary>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차6-2"></a><a href="#목차">6.2</a> 선물 세트 대사</h2></summary>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h1"><span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차7-"></a><a href="#목차">7.</a> 스토리</h2></summary>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h1"><span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차8-"></a><a href="#목차">8.</a> 생일 편지</h2></summary>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차8-1"></a><a href="#목차">8.1</a> 2026</h2></summary>
+<table class="wiki-quote"><tbody><tr><td class="text1" style="border-left: 5px solid #6bb267;">생일</td></tr></tbody></table>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h1"><span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차9-"></a><a href="#목차">9.</a> 캐릭터 일러스트</h2></summary>
+<p class="text1"><span style="font-size: 16px;">-</span></p>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h1"><span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차10-"></a><a href="#목차">10.</a> 작중 행적</h2></summary>
+<p class="text1"><span style="font-size: 16px;">《원신》을 기반으로 제작된 OC 캐릭터이기에 없습니다.</span></p>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h1"><span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차11-"></a><a href="#목차">11.</a> 캐릭터 코스튬</h2></summary>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차11-1"></a><a href="#목차">11.1</a> 흐르는 종막의 서사시</h2></summary>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h1"><span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차12-"></a><a href="#목차">12.</a> 명함</h2></summary>
+<p class="text1">데카·설화</p>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h1"><span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차13-"></a><a href="#목차">13.</a> 인간관계</h2></summary>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차13-1"></a><a href="#목차">13.1</a> <a href="https://namu.wiki/w/%EC%97%AC%ED%96%89%EC%9E%90(%EC%9B%90%EC%8B%A0)" target="_blank">여행자</a></h2></summary>
+<p class="text1">관계성 설명</p>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차13-2"></a><a href="#목차">13.2</a> <a href="https://namu.wiki/w/%EB%B0%A9%EB%9E%91%EC%9E%90(%EC%9B%90%EC%8B%A0)" target="_blank">방랑자</a></h2></summary>
+<p class="text1">관계성</p>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차13-3"></a><a href="#목차">13.3</a> <a href="https://namu.wiki/w/%EB%A6%AC%EC%82%AC(%EC%9B%90%EC%8B%A0)" target="_blank">리사</a></h2></summary>
+<p class="text1">관계성</p>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차13-4"></a><a href="#목차">13.4</a> <a href="https://namu.wiki/w/%EC%BC%80%EC%9D%B4%EC%95%84" target="_blank">케이아</a></h2></summary>
+<p class="text1">관계성</p>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차13-5"></a><a href="#목차">13.5</a> <a href="https://namu.wiki/w/%EB%B2%A4%ED%8B%B0(%EC%9B%90%EC%8B%A0)" target="_blank">벤티</a></h2></summary>
+<p class="text1">관계성</p>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h2"><span class="wiki-h2-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차13-6"></a><a href="#목차">13.6</a> <a href="https://namu.wiki/w/%EB%8B%A4%EC%9D%B4%EB%A3%A8%ED%81%AC" target="_blank">다이루크</a></h2></summary>
+<p class="text1">관계성</p>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h1"><span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차14-"></a><a href="#목차">14.</a> 언어별 표기</h2></summary>
+<p class="text1">본문 내용을 입력하세요.</p>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h1"><span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차15-"></a><a href="#목차">15.</a> 여담</h2></summary>
+<p class="text1">자세한 내용은 데카/여담 문서를 참고하십시오.</p>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h1"><span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차16-"></a><a href="#목차">16.</a> 관련 문서</h2></summary>
+<p class="text1">본문 내용을 입력하세요.</p>
+</details>
+<details open><summary class="text1"><h2 class="wiki-h1"><span class="wiki-h1-icon"><ion-icon name="chevron-down-outline"></ion-icon></span> <a name="목차17-"></a><a href="#목차">17.</a> 둘러보기</h2></summary>
+<p class="text1">본문 내용을 입력하세요.</p>
+</details>
+        </div>
+    </body>
+</html>
